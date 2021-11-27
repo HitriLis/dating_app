@@ -8,7 +8,7 @@ class UserAdmin(admin.ModelAdmin):
     form = CustomUserChangeForm
     model = UserProfile
    
-    list_display = ('first_name', 'last_name', 'email')
+    list_display = ('avatar_tag', 'first_name', 'last_name', 'email')
 
 
     def get_form(self, request, obj=None, **kwargs):
