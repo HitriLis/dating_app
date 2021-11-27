@@ -1,0 +1,28 @@
+version: '3.7'
+
+x-backend-env:
+  &backend-env
+    DSN__DATABASE: 'psql://user:user@psql:5432/user'
+    EMAIL_HOST: ${EMAIL_HOST}
+    EMAIL_PORT: ${EMAIL_PORT}
+    EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+    EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+    DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL}
+    DEFAULT_TO_EMAIL: ${DEFAULT_TO_EMAIL}
+    SEND_TO_EMAIL: ${SEND_TO_EMAIL}
+x-backend:
+  &backend
+  build:
+    context: ../../
+    dockerfile: ci/dev/docker/backend/Dockerfile
+  restart: on-failure
+  tty: true
+  volumes:
+    - "../../app/backend/:/var/app"
+  environment:
+    <<: *backend-env
+
+
+services:
+  backend:
+    <<: *backend

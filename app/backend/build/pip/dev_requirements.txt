@@ -1,0 +1,5 @@
+-r base_requirements.txt
+coverage==5.4
+pylint==2.5.3
+pylint-django==2.3.0
+pylint-plugin-utils==0.6

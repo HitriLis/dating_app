@@ -1,0 +1,32 @@
+version: '3.7'
+
+networks:
+  default:
+    internal: true
+  traefik:
+    external:
+      name: traefik
+  services:
+    external:
+      name: services
+
+services:
+
+  # ####################################################################################################################
+  # Веб-сервисы (backend)
+  # ####################################################################################################################
+  backend:
+    networks:
+      - traefik
+      - services
+      - default
+    expose:
+      - 8000
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_backend.rule=Host(`api.${DOMAIN}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_backend.tls=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_backend.tls.certresolver=le
+    environment:
+      DSN__DATABASE: 'postgresql://${PSQL_USER}:${PSQL_PASS}@postgres:5432/${PSQL_DB}'

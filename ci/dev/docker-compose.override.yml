@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+
+  # ####################################################################################################################
+  # Веб-сервисы (backend)
+  # ####################################################################################################################
+  backend:
+    depends_on:
+      - psql
+    ports:
+      - $SYSTEM__BACKEND_EXT_PORT:8000
+
+  psql:
+    image: postgres:11-alpine
+    expose:
+      - 5432
+    volumes:
+      - "psql_data:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      POSTGRES_DB: user
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  psql_data: {}

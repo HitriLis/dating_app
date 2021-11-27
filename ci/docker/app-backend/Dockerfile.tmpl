@@ -1,0 +1,40 @@
+FROM python:3.7-stretch
+
+LABEL maintainer="Andrey <andrusha.kp@gmail.com>"
+ENV DEBIAN_FRONTEND noninteractive
+
+# Common certificates
+RUN apt-get update -qq && apt-get install -y ca-certificates wget && touch /usr/local/share/ca-certificates/pa.x5.ru.crt
+COPY *.crt /usr/local/share/ca-certificates/
+RUN wget curl.haxx.se/ca/cacert.pem --no-check-certificate -O /usr/local/share/ca-certificates/global_cacert.pem && \
+    cat /usr/local/share/ca-certificates/pa.x5.ru.crt >> /usr/local/share/ca-certificates/global_cacert.pem && \
+    update-ca-certificates && \
+    pip3 config set global.cert /usr/local/share/ca-certificates/global_cacert.pem
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+RUN apt-get update -qq \
+ && apt-get install -y \
+        redis-server \
+        supervisor \
+        screen \
+        libsasl2-dev \
+        libsasl2-modules-gssapi-mit \
+        libnss-ldap \
+        libpam-ldap \
+        ldap-utils \
+        slapd \
+        ldapscripts \
+        libldap2-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --chown=www-data:www-data app/backend/build/pip/ /var/app/build/pip/
+RUN pip install -r /var/app/build/pip/requirements.txt
+
+COPY --chown=www-data:www-data app/backend /var/app/
+COPY --chown=www-data:www-data ci/docker/app-backend/uwsgi_app.ini /etc/uwsgi/app.ini
+
+RUN chown -R www-data:www-data /var/app/
+
+CMD /usr/local/bin/uwsgi --ini /etc/uwsgi/app.ini --master
+
+EXPOSE 8080
