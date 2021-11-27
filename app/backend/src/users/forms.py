@@ -1,13 +1,10 @@
+from users.models import UserProfile
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from users.models import User
-from django import forms
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 class CustomUserCreationForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ('name',  'email', 'password')  
+        model = UserProfile
+        fields = ('first_name', 'last_name',  'email', 'password')
         
     def save(self, commit=True):
         print(self.__dict__)
@@ -16,11 +13,12 @@ class CustomUserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
 class CustomUserChangeForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, required=False)
     class Meta:
-        model = User
-        fields = ('name',  'email', 'password')  
+        model = UserProfile
+        fields = ('first_name', 'last_name', 'email', 'password')
     
     def save(self, commit=True):
         user = super().save(commit=False)

@@ -1,19 +1,15 @@
 from django.contrib import admin
-
-
 from users.forms import CustomUserCreationForm, CustomUserChangeForm
-from users.models import User
-from django.contrib.auth.admin import UserAdmin
+from users.models import UserProfile
 
 
 class UserAdmin(admin.ModelAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
-    model = User
+    model = UserProfile
    
-    list_display = ('name', 'email')
-    
-    readonly_fields = ('date_joined', )
+    list_display = ('first_name', 'last_name', 'email')
+
 
     def get_form(self, request, obj=None, **kwargs):
     
@@ -24,4 +20,4 @@ class UserAdmin(admin.ModelAdmin):
         return super().get_form(request, obj, **defaults)
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(UserProfile, UserAdmin)
