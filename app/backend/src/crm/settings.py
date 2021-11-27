@@ -170,7 +170,7 @@ DATABASES = {
     'default': env.db(var='DSN__DATABASE'),
 }
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.UserProfile'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_METHODS = [
@@ -182,23 +182,6 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-# Phone number
-PHONENUMBER_DEFAULT_REGION = "RU"
-
-
-# Sentry conditional enable
-SENTRY_DSN = env('SENTRY_DSN', default=None)
-if SENTRY_DSN:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        send_default_pii=True
-    )
-
-# pylint: disable=wildcard-import
 try:
     from .settings_local import *
 except ImportError:

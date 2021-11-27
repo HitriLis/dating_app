@@ -3,12 +3,6 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-GENDER_CATEGORY = (
-    ('U', 'Undefined'),
-    ('F', 'Female'),
-    ('M', 'Male')
-)
-
 
 class CustomUserManager(BaseUserManager):
 
@@ -23,13 +17,23 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(password, **extra_fields)
 
 
-class User(AbstractBaseUser, PermissionsMixin):
-    name = models.CharField(_('name'), max_length=128)
-    surname = models.CharField(_('name'), max_length=128)
-    email = models.EmailField(_('email'), unique=True)
-    avatar = models.ImageField()
-    date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
-    gender = models.CharField(choices=GENDER_CATEGORY, max_length=2)
+class UserProfile(AbstractBaseUser, PermissionsMixin):
+    GENDER_UNKNOWN = 0
+    GENDER_FEMALE = 1
+    GENDER_MALE = 2
+    GENDER = (
+        (GENDER_FEMALE, 'Женский'),
+        (GENDER_MALE, 'Мужской'),
+        (GENDER_UNKNOWN, 'Не определён'),
+    )
+
+    # Базовая информация
+    email = models.EmailField('Email', blank=False, null=True, unique=True)
+    password = models.CharField(_('password'), max_length=128, default=None, blank=True, null=True)
+    last_name = models.CharField('Фамилия', max_length=255, blank=False, null=True)
+    first_name = models.CharField('Имя', max_length=255, blank=False, null=True)
+    avatar = models.ImageField('Фотография', upload_to='avatars', default='static/default_avatar.png')
+    gender = models.PositiveIntegerField(choices=GENDER, default=GENDER_UNKNOWN, verbose_name='Пол')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
