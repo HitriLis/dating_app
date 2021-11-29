@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-
 from common import add_watermark
 
 User = get_user_model()
@@ -22,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
         validated_data['password'] = make_password(validated_data['password'])
-        if validated_data['avatar']:
+        if 'avatar' in validated_data:
             image = validated_data['avatar']
             validated_data['avatar'] = add_watermark(image)
 
