@@ -67,5 +67,5 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 class UserFollowing(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, blank=True, null=True)
-    subscribers = models.ManyToManyField(UserProfile)
+    subscribers = models.ManyToManyField(UserProfile, related_name='subscribers')
     created = models.DateTimeField(auto_now_add=True)
