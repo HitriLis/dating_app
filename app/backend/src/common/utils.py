@@ -3,8 +3,8 @@ from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.files.base import ContentFile
 import os
+from django.core.mail import send_mail
 from django.conf import settings
-
 
 def add_watermark(image, opacity=1, wm_interval=0):
     filename = image.name
@@ -32,3 +32,11 @@ def add_watermark(image, opacity=1, wm_interval=0):
     buff_val = buffer_file.getvalue()
     pillow_image = ContentFile(buff_val)
     return InMemoryUploadedFile(pillow_image, None, filename, content_type, pillow_image.tell, None)
+
+
+def mail_sender(user, subscriber):
+    try:
+        send_mail('Взаимная симпатия', f'Вы понравились: {user.first_name}! Почта участника: {user.email}',
+                  settings.EMAIL_HOST_USER, [user.email, subscriber.email])
+    except Exception as e:
+        return e

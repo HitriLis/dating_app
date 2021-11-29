@@ -37,7 +37,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField('Фотография', upload_to='avatars', default='static/default_avatar.png')
     gender = models.PositiveIntegerField(choices=GENDER, default=GENDER_UNKNOWN, verbose_name='Пол')
     is_staff = models.BooleanField(_('staff status'), default=False)
-    is_active = models.BooleanField(_('active'), default=True)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     USERNAME_FIELD = 'email'
@@ -49,9 +48,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         verbose_name = _('user')
         verbose_name_plural = _('users')
         swappable = 'AUTH_USER_MODEL'
-        indexes = [
-            models.Index(fields=['is_active']),
-        ]
 
     def __str__(self):
         return str(self.email)
@@ -67,3 +63,9 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     def avatar_tag(self):
         return mark_safe('<img src="%s" width="50" height="50" />' % self.get_avatar())
+
+
+class UserFollowing(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, blank=True, null=True)
+    subscribers = models.ManyToManyField(UserProfile)
+    created = models.DateTimeField(auto_now_add=True)
