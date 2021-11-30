@@ -6,10 +6,11 @@ from common import add_watermark
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'gender', 'password', 'avatar')
+        fields = ('email', 'first_name', 'last_name', 'gender', 'password', 'avatar', 'longitude', 'latitude')
 
     def get_avatar(self, obj):
         return self.context['request'].build_absolute_uri(obj.get_avatar())
@@ -31,3 +32,12 @@ class UserSerializer(serializers.ModelSerializer):
             self.instance = self.create(validated_data)
 
         return self.instance
+
+
+class UserSerializerSimple(serializers.ModelSerializer):
+    distance = serializers.IntegerField(min_value=0)
+
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'gender', 'avatar', 'distance')
+        read_only_fields = ('email', 'first_name', 'last_name', 'gender', 'avatar', 'distance')

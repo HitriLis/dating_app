@@ -1,8 +1,11 @@
 from rest_framework import routers
-
-from users.api.views import UserViewSet, UserListViewSet
+from django.urls import path
+from users.api.views import UserViewSet, UserListViewSet, UserViewMatch
 
 router = routers.DefaultRouter()
-router.register('clients/create', UserViewSet)
-router.register('list', UserListViewSet, basename='UserList')
-urlpatterns = router.urls
+router.register('clients/create', UserViewSet, basename='user-view')
+router.register('list', UserListViewSet, basename='user-list')
+
+urlpatterns = [
+    path('clients/<int:pk>/match', UserViewMatch.as_view(), name='user-match')
+] + router.urls

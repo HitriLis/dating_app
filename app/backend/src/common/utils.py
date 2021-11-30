@@ -5,6 +5,7 @@ from django.core.files.base import ContentFile
 import os
 from django.core.mail import send_mail
 from django.conf import settings
+from math import sin, cos, radians, acos
 
 def add_watermark(image, opacity=1, wm_interval=0):
     filename = image.name

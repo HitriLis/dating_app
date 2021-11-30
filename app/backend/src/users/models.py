@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
-
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, password=None, **extra_fields):
@@ -38,10 +37,15 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     gender = models.PositiveIntegerField(choices=GENDER, default=GENDER_UNKNOWN, verbose_name='Пол')
     is_staff = models.BooleanField(_('staff status'), default=False)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    latitude = models.DecimalField(_('latitude'), max_digits=22, decimal_places=16, blank=True, null=True)
+    longitude = models.DecimalField(_('longitude'), max_digits=22, decimal_places=16, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-
+    indexes = [
+        models.Index(fields=['longitude']),
+        models.Index(fields=['latitude'])
+    ]
     objects = CustomUserManager()
 
     class Meta:
