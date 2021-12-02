@@ -11,13 +11,6 @@ RUN apk update \
 COPY *.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates 2>/dev/null || true
 
-# Common certificates
-RUN touch /usr/local/share/ca-certificates/pa.x5.ru.crt
-COPY *.crt /usr/local/share/ca-certificates/
-RUN wget curl.haxx.se/ca/cacert.pem --no-check-certificate -O /usr/local/share/ca-certificates/global_cacert.pem && \
-    cat /usr/local/share/ca-certificates/pa.x5.ru.crt >> /usr/local/share/ca-certificates/global_cacert.pem && \
-    update-ca-certificates
-
 
 ADD ci/docker/app-backend-nginx/mod_zip-master.tar.gz /tmp/
 

@@ -3,15 +3,6 @@ FROM python:3.7-stretch
 LABEL maintainer="Andrey <andrusha.kp@gmail.com>"
 ENV DEBIAN_FRONTEND noninteractive
 
-# Common certificates
-RUN apt-get update -qq && apt-get install -y ca-certificates wget && touch /usr/local/share/ca-certificates/pa.x5.ru.crt
-COPY *.crt /usr/local/share/ca-certificates/
-RUN wget curl.haxx.se/ca/cacert.pem --no-check-certificate -O /usr/local/share/ca-certificates/global_cacert.pem && \
-    cat /usr/local/share/ca-certificates/pa.x5.ru.crt >> /usr/local/share/ca-certificates/global_cacert.pem && \
-    update-ca-certificates && \
-    pip3 config set global.cert /usr/local/share/ca-certificates/global_cacert.pem
-ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-
 RUN apt-get update -qq \
  && apt-get install -y \
         redis-server \
